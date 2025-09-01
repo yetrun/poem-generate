@@ -27,11 +27,11 @@ def load_text_vectorization(path):
         raise ValueError("词表为空")
 
     tv = layers.TextVectorization(
-        max_tokens=10000,
         standardize=None,
-        split=None,  # 直接喂二维数组
+        split='character',
         output_mode="int",
-        output_sequence_length=24
+        output_sequence_length=None,
+        ragged = True
     )
     tv.set_vocabulary(vocab)
     return tv
@@ -39,36 +39,29 @@ def load_text_vectorization(path):
 text_vectorization = load_text_vectorization(VOCAB_PATH)
 VOCAB_SIZE = len(text_vectorization.get_vocabulary())
 
-def is_cjk(ch: str) -> bool:
-    return len(ch) == 1 and "\u4e00" <= ch <= "\u9fff"
-
 # -------- 模型加载 --------
 model = models.load_model(MODEL_PATH, compile=False)
-try:
-    out_dim = model.output_shape[-1]
-    if out_dim != VOCAB_SIZE:
-        raise ValueError(f"模型输出维度({out_dim})与词表大小({VOCAB_SIZE})不一致")
-except Exception:
-    pass  # 某些模式下拿不到 output_shape，忽略
+out_dim = model.output_shape[-1]
+if out_dim != VOCAB_SIZE:
+    raise ValueError(f"模型输出维度({out_dim})与词表大小({VOCAB_SIZE})不一致")
 
-# Define the sample generate function
-def generate_poem(prompt, max_length=24, temperature=1.0):
+# Copy the generate and sampling functions from lstm_generative_model.ipynb
+def generate(prompt: str, max_length: int, temperature = 1.0) -> str:
     """
     Generate a poem based on the start prompt
 
     Returns:
         A generated poem as a string.
     """
-    prompt_inputs = list(prompt)
-    generated = text_vectorization(prompt_inputs)[:len(prompt)].numpy().tolist()
+    generated = list(text_vectorization(prompt)[:len(prompt)])
     while len(generated) < max_length:
         input_sequence = np.array(generated).reshape(1, -1)
         predictions = model.predict(input_sequence, verbose=0)[0]
-        next_token_id = sample(predictions[-1], temperature)
+        next_token_id = sampling(predictions[-1], temperature)
         generated.append(next_token_id)
     return ''.join(text_vectorization.get_vocabulary()[token_id] for token_id in generated)
 
-def sample(predictions, temperature=1.0, eps1=1e-20, eps2=1e-9):
+def sampling(predictions: list, temperature=1.0, eps1=1e-20, eps2=1e-9) -> int:
     p = np.asarray(predictions, dtype=np.float64)
 
     # The two key points: log(p + eps1) divide by (T + eps2)
@@ -81,9 +74,10 @@ def sample(predictions, temperature=1.0, eps1=1e-20, eps2=1e-9):
     q /= q.sum()
     return int(np.random.choice(len(q), p=q))
 
+# -------- 生成与格式化 --------
 def generate_and_format(prompt, temperature=1.0):
     # 生成正常的古诗
-    poem = generate_poem(prompt, temperature=temperature)
+    poem = generate(prompt, 24, temperature=temperature)
 
     # 格式化为 4×6
     lines = ["".join(poem[i:i+6]) for i in range(0, TOTAL_CHARS, 6)]
