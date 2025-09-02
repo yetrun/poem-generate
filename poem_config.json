@@ -1,0 +1,12 @@
+[
+  {
+    "genre": "WUJUE",
+    "vocabulary_path": "models/poetry_vocabulary.txt",
+    "model_path": "models/lstm_poetry_model-epoch50.keras"
+  },
+  {
+    "genre": "QIJUE",
+    "vocabulary_path": "models/poetry_vocabulary.txt",
+    "model_path": "models/lstm_poetry_model-epoch50.keras"
+  }
+]
