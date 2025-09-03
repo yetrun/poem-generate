@@ -35,3 +35,25 @@ pinned: false
    git commit -m "Add model via LFS"
    git push
    ```
+   
+## 运行训练程序
+
+命令行：
+
+```bash
+# 生成五绝模型
+python3 train.py --genre=WUJUE
+
+# 查看命令行参数
+python3 train.py --help
+```
+
+由于训练时间较长，建议使用 `tmux` 或 `nohup` 等工具后台运行，避免在 SSH 断开后程序中止：
+
+```bash
+# 推荐：tmux
+tmux new -s train -d "python train.py 2>&1 | tee -a models/train.log"
+
+# 随时重连
+tmux attach -t train
+```
