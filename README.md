@@ -8,9 +8,13 @@ app_file: app.py
 pinned: false
 ---
 
-# LSTM Poetry (Gradio)
+# LSTM Poetry Generate
 
-五言绝句小应用（Gradio）。本仓库可直接用于 **Hugging Face Spaces** 自动部署。
+五言绝句小应用。本仓库可直接用于 **Hugging Face Spaces** 自动部署。
+
+Hugging Face 应用演示地址（可能需要打开代理访问）：
+
+> https://huggingface.co/spaces/yetrun/Poetry-Generate
 
 ## 一键部署（推荐）
 

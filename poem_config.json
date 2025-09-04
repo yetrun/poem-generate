@@ -1,12 +1,22 @@
 [
   {
     "genre": "WUJUE",
-    "vocabulary_path": "models/poetry_vocabulary.txt",
-    "model_path": "models/lstm_poetry_model-epoch50.keras"
+    "vocabulary_path": "models/WUJUE_vocabulary.txt",
+    "model_path": "models/WUJUE_lstm_model-epoch50.keras"
   },
   {
     "genre": "QIJUE",
-    "vocabulary_path": "models/poetry_vocabulary.txt",
-    "model_path": "models/lstm_poetry_model-epoch50.keras"
+    "vocabulary_path": "models/QIJUE_vocabulary.txt",
+    "model_path": "models/QIJUE_lstm_model-epoch50.keras"
+  },
+  {
+    "genre": "WULV",
+    "vocabulary_path": "models/WULV_vocabulary.txt",
+    "model_path": "models/WULV_lstm_model-epoch50.keras"
+  },
+  {
+    "genre": "QILV",
+    "vocabulary_path": "models/QILV_vocabulary.txt",
+    "model_path": "models/QILV_lstm_model-epoch50.keras"
   }
 ]
